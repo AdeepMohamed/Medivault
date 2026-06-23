@@ -131,6 +131,9 @@ const Landing = () => {
       <footer className="landing-footer">
         <div className="footer-logo">🏥 MediVault</div>
         <p>© 2026 MediVault. Your personal medical record locker.</p>
+        <p style={{ fontSize: '13px', marginTop: 12 }}>
+          Developed by <span style={{ color: 'var(--teal-400)', fontWeight: 600 }}>Adeep Mohamed</span>
+        </p>
         <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: 8 }}>
           ⚕️ MediVault is not a medical provider. Always consult a qualified healthcare professional.
         </p>
