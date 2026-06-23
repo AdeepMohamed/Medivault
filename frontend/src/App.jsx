@@ -29,6 +29,17 @@ const AppLayout = ({ children }) => {
       <Sidebar />
       <div className="main-content">
         {children}
+        <footer style={{
+          padding: '20px 32px',
+          textAlign: 'center',
+          fontSize: '13px',
+          color: 'var(--text-muted)',
+          borderTop: '1px solid var(--border)',
+          marginTop: 'auto',
+          background: 'transparent'
+        }}>
+          Developed by <span style={{ color: 'var(--teal-400)', fontWeight: 600 }}>Adeep Mohamed</span>
+        </footer>
       </div>
     </div>
   );
