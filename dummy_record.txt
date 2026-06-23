@@ -1,0 +1,18 @@
+Patient: John Doe
+DOB: 01/01/1990
+Date of Visit: June 20, 2026
+
+Chief Complaint:
+Seasonal allergic rhinitis with nasal congestion and sneezing.
+
+Assessment:
+Mild seasonal allergies exacerbated by high pollen counts.
+
+Plan/Prescription:
+1. Cetirizine 10mg - Take 1 tablet daily at bedtime for 14 days.
+2. Fluticasone nasal spray - 2 sprays in each nostril daily.
+3. Follow up in 2 weeks if symptoms do not improve.
+
+Signed,
+Dr. Alice Smith, MD
+License: MD-987654
