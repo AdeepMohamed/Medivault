@@ -42,11 +42,11 @@
   --success: #10b981;
   --warning: #f59e0b;
   --error:   #ef4444;
-  --info:    #3b82f6;
+  --info:    #22c55e;
 
   /* Category Colors */
   --cat-prescription: #8b5cf6;
-  --cat-report:       #3b82f6;
+  --cat-report:       #22c55e;
   --cat-scan:         #f59e0b;
   --cat-vaccination:  #10b981;
   --cat-lab:          #06b6d4;
@@ -293,13 +293,13 @@ input, textarea, select {
 .badge-success { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); }
 .badge-warning { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.25); }
 .badge-error { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
-.badge-info { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.25); }
+.badge-info { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.25); }
 .badge-purple { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.25); }
 .badge-gray { background: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.25); }
 
 /* ── Category Colors ── */
 .cat-Prescription { background: rgba(139,92,246,0.15); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.25); }
-.cat-Report       { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+.cat-Report       { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.25); }
 .cat-Scan         { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
 .cat-Vaccination  { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
 .cat-Lab          { background: rgba(6,182,212,0.15); color: #06b6d4; border: 1px solid rgba(6,182,212,0.25); }
@@ -510,4 +510,33 @@ tbody tr:hover { background: var(--bg-hover); }
   .page-content { padding: 16px; }
   .records-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================================
+   Light Theme Overrides
+   ============================================================ */
+body.light-theme {
+  --bg-base:    #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-card:    #ffffff;
+  --bg-elevated:#f1f5f9;
+  --bg-hover:   #e2e8f0;
+  --bg-input:   #f8fafc;
+
+  --border:       rgba(13, 148, 136, 0.12);
+  --border-hover: rgba(13, 148, 136, 0.3);
+  --border-focus: rgba(13, 148, 136, 0.6);
+
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #64748b;
+
+  --grad-teal: linear-gradient(135deg, #0d9488, #0f766e);
+  --grad-dark: linear-gradient(135deg, #ffffff, #f1f5f9);
+  --grad-card: linear-gradient(145deg, #ffffff, #f8fafc);
+  --grad-hero: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.08);
 }

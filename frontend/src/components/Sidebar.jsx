@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -22,6 +23,20 @@ const ADMIN_ITEMS = [
 const Sidebar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -82,8 +97,12 @@ const Sidebar = () => {
         )}
       </nav>
 
-      {/* Logout */}
-      <div className="sidebar-footer">
+      {/* Footer / Theme Toggle & Logout */}
+      <div className="sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <button onClick={toggleTheme} className="sidebar-theme-toggle">
+          <span>{theme === 'dark' ? '☀️' : '🌙'}</span>
+          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+        </button>
         <button onClick={handleLogout} className="sidebar-logout">
           <span>🚪</span>
           <span>Sign Out</span>
