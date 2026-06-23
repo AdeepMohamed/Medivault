@@ -19,11 +19,17 @@ const app = express();
 
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+// Clean up FRONTEND_URL to prevent trailing slash CORS mismatches
+let allowedOrigin = process.env.FRONTEND_URL || '*';
+if (typeof allowedOrigin === 'string' && allowedOrigin.endsWith('/')) {
+  allowedOrigin = allowedOrigin.slice(0, -1);
+}
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: allowedOrigin,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-view-token'],
 }));
 
 app.use(express.json({ limit: '50mb' }));
