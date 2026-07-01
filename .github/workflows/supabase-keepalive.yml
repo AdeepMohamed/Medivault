@@ -1,0 +1,74 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Run once every day at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggering from GitHub Actions UI
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Mode 1: HTTP API Ping (If DEPLOYED_URL secret is provided)
+      - name: Ping Deployed Keep-Alive Endpoint
+        if: ${{ secrets.DEPLOYED_URL != '' }}
+        run: |
+          echo "🌐 Pinging deployed API keep-alive endpoint..."
+          CRON_HEADER=""
+          if [ -n "${{ secrets.CRON_SECRET }}" ]; then
+            CRON_HEADER="-H \"Authorization: Bearer ${{ secrets.CRON_SECRET }}\""
+          fi
+          
+          # Execute the curl request
+          RESPONSE=$(eval curl -s -w "%{http_code}" -o response.json "${{ secrets.DEPLOYED_URL }}/api/cron/keepalive" $CRON_HEADER)
+          
+          echo "Status Code: $RESPONSE"
+          echo "Response Body:"
+          cat response.json
+          
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "❌ Keep-alive endpoint returned error status $RESPONSE"
+            exit 1
+          fi
+          echo "✅ Keep-alive ping succeeded!"
+
+      # Mode 2: Direct Database query (If SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY secrets are provided)
+      - name: Setup Node.js
+        if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' && secrets.DEPLOYED_URL == '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Backend Dependencies
+        if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' && secrets.DEPLOYED_URL == '' }}
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run Standalone Keep-Alive Script
+        if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' && secrets.DEPLOYED_URL == '' }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          cd backend
+          npm run keepalive
+
+      # Fallback: Warning if no secrets are configured
+      - name: Configuration Reminder
+        if: ${{ secrets.DEPLOYED_URL == '' && (secrets.SUPABASE_URL == '' || secrets.SUPABASE_SERVICE_ROLE_KEY == '') }}
+        run: |
+          echo "⚠️  [Warning] Keep-Alive is not configured on GitHub!"
+          echo "To activate this GitHub Action workflow, please go to your GitHub repository Settings -> Secrets and variables -> Actions, and add either:"
+          echo "  - DEPLOYED_URL: The URL of your deployed backend (e.g. https://your-app.vercel.app)"
+          echo "  - CRON_SECRET (optional): Authorization token for the /api/cron/keepalive endpoint"
+          echo "OR"
+          echo "  - SUPABASE_URL: Your Supabase Project URL"
+          echo "  - SUPABASE_SERVICE_ROLE_KEY: Your Supabase Service Role Key"

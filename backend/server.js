@@ -14,6 +14,7 @@ const appointmentRoutes = require('./src/routes/appointments');
 const medicationRoutes = require('./src/routes/medications');
 const auditRoutes = require('./src/routes/audit');
 const adminRoutes = require('./src/routes/admin');
+const cronRoutes = require('./src/routes/cron');
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/medications', medicationRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/cron', cronRoutes);
 
 // 404 handler
 app.use((req, res) => {
