@@ -2,8 +2,7 @@
 
 > A production-ready, AI-powered full-stack application for secure personal medical record management.
 
-**Stack**: React + Vite | Node.js + Express | Supabase (PostgreSQL + Storage) | Gemini AI | Deployed on Vercel
-
+**Stack**: React + Vite | Node.js + Express | Supabase (PostgreSQL + Storage) | Groq AI | Deployed on Vercel
 ---
 
 ## ✨ Features
@@ -12,7 +11,7 @@
 - 📁 **Medical Record Management** — Upload, categorize, version, search records
 - ⬇️ **Local Disk Download** — Download any file to your local disk instantly
 - 🕐 **Health Timeline** — Chronological view grouped by year
-- 🤖 **AI Health Assistant** — Gemini-powered chatbot + report summarization
+- 🤖 **AI Health Assistant** — Groq-powered chatbot + report summarization
 - 🔗 **Secure Doctor Sharing** — OTP-verified share links + QR codes
 - 💊 **Medication Tracker** — Active/inactive medications with prescription linking
 - 📅 **Appointment Manager** — Schedule and track doctor appointments
@@ -64,7 +63,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 EMAIL_USER=your-gmail@gmail.com
 EMAIL_PASS=your-gmail-app-password
 
-GEMINI_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
 ### 4. Configure Frontend Environment
@@ -116,7 +115,7 @@ App runs at: http://localhost:5173
 | Key | Source |
 |---|---|
 | `SUPABASE_URL` & `SUPABASE_SERVICE_ROLE_KEY` | [Supabase Dashboard](https://app.supabase.com) → Project Settings → API |
-| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) |
+| `GROQ_API_KEY` | [Groq Console](https://console.groq.com/keys) |
 | `EMAIL_USER` & `EMAIL_PASS` | Gmail → [App Passwords](https://myaccount.google.com/apppasswords) |
 
 ---

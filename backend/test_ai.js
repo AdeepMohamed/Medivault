@@ -2,7 +2,7 @@ require('dotenv').config();
 const { summarizeRecord, chatWithAssistant } = require('./src/services/aiService');
 
 async function testAI() {
-  console.log('🤖 Testing Gemini AI integration...');
+  console.log('🤖 Testing Groq AI integration...');
 
   const mockText = `
 Patient: John Doe

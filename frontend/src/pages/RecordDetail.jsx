@@ -166,7 +166,7 @@ const RecordDetail = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 20 }}>🤖</span>
                 <h3 style={{ fontWeight: 700 }}>AI Health Summary</h3>
-                <span className="badge badge-purple">Gemini AI</span>
+                <span className="badge badge-purple">Groq AI</span>
               </div>
               <button
                 className="btn btn-secondary btn-sm"

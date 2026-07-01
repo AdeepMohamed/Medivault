@@ -224,7 +224,7 @@ const DoctorAccess = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
               <span>🤖</span>
               <h3 style={{ fontWeight: 700 }}>AI Health Summary</h3>
-              <span className="badge badge-purple">Gemini AI</span>
+              <span className="badge badge-purple">Groq AI</span>
             </div>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 12 }}>{aiSummary.summary}</p>
             {aiSummary.key_findings?.length > 0 && (

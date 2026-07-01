@@ -3,7 +3,7 @@ import './Landing.css';
 
 const features = [
   { icon: '🔒', title: 'Bank-Grade Security', desc: 'JWT authentication, OTP verification, and encrypted storage.' },
-  { icon: '🤖', title: 'AI Health Assistant', desc: 'Gemini-powered chatbot summarizes reports and answers health queries.' },
+  { icon: '🤖', title: 'AI Health Assistant', desc: 'Groq-powered chatbot summarizes reports and answers health queries.' },
   { icon: '🔗', title: 'Secure Doctor Sharing', desc: 'Share records via OTP-protected links and QR codes.' },
   { icon: '📊', title: 'Health Timeline', desc: 'Visualize your medical history chronologically.' },
   { icon: '💊', title: 'Medication Tracker', desc: 'Track active medications and dosage schedules.' },

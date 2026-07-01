@@ -1,8 +1,4 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
-const apiKey = process.env.GEMINI_API_KEY || '';
-const isGroq = apiKey.startsWith('gsk_');
-const genAI = (!isGroq && apiKey) ? new GoogleGenerativeAI(apiKey) : null;
+const apiKey = process.env.GROQ_API_KEY || '';
 
 const MEDICAL_SYSTEM_PROMPT = `You are MediVault Health Assistant, an AI-powered medical document assistant embedded in the MediVault platform.
 
@@ -84,40 +80,29 @@ Format your response as JSON with this structure:
 
 If you cannot identify abnormal values, use an empty array.`;
 
-    let responseText;
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: MEDICAL_SYSTEM_PROMPT },
+          { role: 'user', content: prompt },
+        ],
+      }),
+    });
 
-    if (isGroq) {
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          response_format: { type: 'json_object' },
-          messages: [
-            { role: 'system', content: MEDICAL_SYSTEM_PROMPT },
-            { role: 'user', content: prompt },
-          ],
-        }),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Groq API Error: ${res.status} - ${errText}`);
-      }
-
-      const data = await res.json();
-      responseText = data.choices[0].message.content;
-    } else {
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-      const result = await model.generateContent([
-        { text: MEDICAL_SYSTEM_PROMPT },
-        { text: prompt },
-      ]);
-      responseText = result.response.text();
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Groq API Error: ${res.status} - ${errText}`);
     }
+
+    const data = await res.json();
+    const responseText = data.choices[0].message.content;
 
     // Parse JSON from response
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
@@ -144,14 +129,14 @@ If you cannot identify abnormal values, use an empty array.`;
     console.error('AI API Error in summarizeRecord:', err.message);
     // Return a mock summary as a graceful fallback
     return {
-      summary: `Note: Offline Mode (AI Quota Limit). This is a mock patient-friendly summary for "${recordTitle}" (${category}). To enable live AI summaries, verify your Gemini/Groq API key in backend/.env has active free tier/paid quota.`,
+      summary: `Note: Offline Mode (AI Quota Limit). This is a mock patient-friendly summary for "${recordTitle}" (${category}). To enable live AI summaries, verify your Groq API key in backend/.env has active free tier/paid quota.`,
       keyFindings: [
         `Document Name: ${recordTitle}`,
         `Document Category: ${category}`,
         `API Status: ${sanitizeErrorMessage(err.message)}`
       ],
       abnormalValues: [],
-      wellnessRecommendations: 'Ensure your backend/.env contains a valid Gemini or Groq API key with active quota.'
+      wellnessRecommendations: 'Ensure your backend/.env contains a valid Groq API key with active quota.'
     };
   }
 };
@@ -169,65 +154,38 @@ const chatWithAssistant = async (message, history = [], contextRecord = null) =>
   }
 
   try {
-    let response;
+    const contextPrompt = contextRecord
+      ? `\n\nThe patient has provided a medical record as context:\n${contextRecord.substring(0, 3000)}`
+      : '';
 
-    if (isGroq) {
-      const contextPrompt = contextRecord
-        ? `\n\nThe patient has provided a medical record as context:\n${contextRecord.substring(0, 3000)}`
-        : '';
+    const messages = [
+      { role: 'system', content: MEDICAL_SYSTEM_PROMPT + contextPrompt },
+      ...history.slice(-10).map(h => ({
+        role: h.role === 'assistant' ? 'assistant' : 'user',
+        content: h.content
+      })),
+      { role: 'user', content: message }
+    ];
 
-      const messages = [
-        { role: 'system', content: MEDICAL_SYSTEM_PROMPT + contextPrompt },
-        ...history.slice(-10).map(h => ({
-          role: h.role === 'assistant' ? 'assistant' : 'user',
-          content: h.content
-        })),
-        { role: 'user', content: message }
-      ];
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: messages,
+      }),
+    });
 
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: messages,
-        }),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Groq API Error: ${res.status} - ${errText}`);
-      }
-
-      const data = await res.json();
-      response = data.choices[0].message.content + DISCLAIMER;
-    } else {
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-      const contextPrompt = contextRecord
-        ? `\n\nThe patient has provided a medical record as context:\n${contextRecord.substring(0, 3000)}`
-        : '';
-
-      // Build chat history for Gemini
-      const chatHistory = history.slice(-10).map(h => ({
-        role: h.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: h.content }],
-      }));
-
-      const chat = model.startChat({
-        history: [
-          { role: 'user', parts: [{ text: MEDICAL_SYSTEM_PROMPT + contextPrompt }] },
-          { role: 'model', parts: [{ text: 'I understand. I am MediVault Health Assistant. I will help with health questions while strictly following medical guidelines and always recommending professional consultation.' }] },
-          ...chatHistory,
-        ],
-      });
-
-      const result = await chat.sendMessage(message);
-      response = result.response.text() + DISCLAIMER;
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Groq API Error: ${res.status} - ${errText}`);
     }
+
+    const data = await res.json();
+    const response = data.choices[0].message.content + DISCLAIMER;
 
     return { response, isEmergency: false };
   } catch (err) {

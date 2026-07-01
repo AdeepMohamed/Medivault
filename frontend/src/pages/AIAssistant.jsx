@@ -102,7 +102,7 @@ How can I help you today?`,
         <div>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span>🤖</span> AI Health Assistant
-            <span className="badge badge-purple">Gemini AI</span>
+            <span className="badge badge-purple">Groq AI</span>
           </h1>
           <p className="page-subtitle">Ask health questions or get your reports explained</p>
         </div>
